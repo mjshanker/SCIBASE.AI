@@ -23,4 +23,4 @@ npm test
 npm run demo
 ```
 
-The demo writes reviewer artifacts into `reports/`.
+The demo writes reviewer artifacts into `reports/`. The submitted review packet includes a short H.264 demo video at `reports/demo.mp4`.

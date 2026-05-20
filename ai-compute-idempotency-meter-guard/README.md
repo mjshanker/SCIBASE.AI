@@ -20,4 +20,4 @@ npm test
 npm run demo
 ```
 
-Generated review artifacts are written to `reports/`.
+Generated review artifacts are written to `reports/`, including the short H.264 demo video at `reports/demo.mp4`.
