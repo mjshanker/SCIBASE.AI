@@ -5,6 +5,27 @@ export const policy = {
   rawToDistinctInflationThreshold: 2.5,
 }
 
+export const accountControls = {
+  "lab-northbridge": {
+    plan: "Lab Pro",
+    paymentRail: "card_subscription",
+    includedComputeCents: 2,
+    topUpBalanceCents: 15,
+  },
+  "lab-westlake": {
+    plan: "Reproducibility Pack",
+    paymentRail: "institutional_invoice",
+    includedComputeCents: 25,
+    topUpBalanceCents: 100,
+  },
+  "institute-helix": {
+    plan: "Institutional License",
+    paymentRail: "institutional_invoice",
+    includedComputeCents: 1,
+    topUpBalanceCents: 0,
+  },
+}
+
 export const computeEvents = [
   {
     id: "evt-001",

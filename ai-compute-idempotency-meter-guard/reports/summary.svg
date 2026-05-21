@@ -9,11 +9,12 @@
     <text x="96" y="350">Collapsed retry rows: 2</text>
     <text x="96" y="395">Held rows: 1</text>
     <text x="96" y="440">Avoided overbill cents: 94.46</text>
+    <text x="96" y="485">Invoice overage cents: 0.44</text>
   </g>
   <rect x="700" y="230" width="430" height="248" rx="14" fill="#e0f2fe" stroke="#0284c7" stroke-width="3"/>
   <text x="732" y="286" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#075985">Controls covered</text>
   <text x="732" y="336" font-family="Arial, sans-serif" font-size="22" fill="#075985">Content-hash retry collapse</text>
   <text x="732" y="378" font-family="Arial, sans-serif" font-size="22" fill="#075985">Raw vs attributed count guard</text>
   <text x="732" y="420" font-family="Arial, sans-serif" font-size="22" fill="#075985">Rerun-scope billing hold</text>
-  <text x="96" y="590" font-family="Arial, sans-serif" font-size="18" fill="#475569">Audit digest: 5204e71ba374a26a8124c985bc4c66669ef462ded0da97fe...</text>
+  <text x="96" y="590" font-family="Arial, sans-serif" font-size="18" fill="#475569">Audit digest: d99fba495e098133aee15d4f6192b93a85f85257ee5e0a78...</text>
 </svg>

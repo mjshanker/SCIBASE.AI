@@ -10,6 +10,7 @@ The module uses synthetic data only and has no external dependencies.
 - Orphaned tool calls are held until a matching terminal result or refund policy exists.
 - Raw event counts are compared with distinct account/source/day attribution counts.
 - Nondeterministic reproducibility reruns are held unless billing scope is explicit.
+- Account-level quota and prepaid top-up controls decide whether clean usage is covered, overage-billable, or held.
 - Finance receives deterministic meter rows, findings, account decisions, and an audit digest.
 
 ## Run

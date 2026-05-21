@@ -8,10 +8,10 @@ This contribution focuses on the AI compute billing control boundary.
 | --- | --- |
 | AI compute billing | `index.js` evaluates model/tool/reproducibility events into billable meter rows. |
 | Transparent usage meters | `meterRows` include raw event IDs, retained billable event, action, reason, raw cents, billable cents, and avoided overbill cents. |
-| Institutional invoice readiness | `accountSummaries` mark accounts as `ready` or `hold` before invoice posting. |
-| Top-up and quota safety | Duplicate retry rows and raw-count inflation are reported before consuming paid usage or recognizing revenue. |
+| Institutional invoice readiness | `accountSummaries` mark accounts as `ready` or `hold`, then emit invoice release decisions and finance actions before posting. |
+| Top-up and quota safety | `accountControls` apply included compute quota and prepaid top-up balances before any overage invoice is released. |
 | Finance audit evidence | `demo.js` emits `reports/summary.json`, `reports/finance-review-packet.md`, and a deterministic `auditDigest`. |
-| Reviewer verification | `test.js` covers retry collapse, nondeterministic rerun holds, raw-count inflation, account hold status, and digest stability. |
+| Reviewer verification | `test.js` covers retry collapse, nondeterministic rerun holds, raw-count inflation, account hold status, top-up/overage decisions, and digest stability. |
 
 ## Distinctness
 

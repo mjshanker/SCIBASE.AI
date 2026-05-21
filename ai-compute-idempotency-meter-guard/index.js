@@ -138,24 +138,96 @@ function evaluateSourceInflation(events, policy) {
 }
 
 function evaluateReproducibilityRuns(events) {
-  return events
-    .filter(
-      (event) =>
-        event.operation === "reproducibility_check" &&
-        event.reproducibility?.deterministic === false &&
-        !event.reproducibility?.billingScope,
-    )
-    .map((event) => ({
-      accountId: event.accountId,
-      severity: "critical",
-      code: "rerun_scope_undefined",
-      eventId: event.id,
-      message:
-        "Nondeterministic reproducibility rerun lacks a billing-scope policy. Hold charges until run-vs-verified-output responsibility is defined.",
-    }))
+  const findingsByKey = new Map()
+  for (const event of events) {
+    if (
+      event.operation !== "reproducibility_check" ||
+      event.reproducibility?.deterministic !== false ||
+      event.reproducibility?.billingScope
+    ) {
+      continue
+    }
+
+    const key = [
+      event.accountId,
+      event.sourceDocumentId ?? event.requestId,
+      event.operation,
+    ].join(":")
+    if (!findingsByKey.has(key)) {
+      findingsByKey.set(key, {
+        accountId: event.accountId,
+        severity: "critical",
+        code: "rerun_scope_undefined",
+        eventIds: [],
+        message:
+          "Nondeterministic reproducibility reruns lack a billing-scope policy. Hold charges until run-vs-verified-output responsibility is defined.",
+      })
+    }
+    findingsByKey.get(key).eventIds.push(event.id)
+  }
+
+  return [...findingsByKey.values()].map((finding) => ({
+    ...finding,
+    eventIds: finding.eventIds.sort(),
+  }))
 }
 
-export function evaluateComputeBilling(events, policy) {
+function allocateInvoiceDecision(summary, accountControl = {}) {
+  const includedComputeCents = accountControl.includedComputeCents ?? 0
+  const topUpBalanceCents = accountControl.topUpBalanceCents ?? 0
+  const billableCents = summary.billableCents
+
+  const includedUsageAppliedCents =
+    summary.status === "hold" ? 0 : Math.min(billableCents, includedComputeCents)
+  const afterIncludedCents = Math.max(0, billableCents - includedUsageAppliedCents)
+  const topUpAppliedCents =
+    summary.status === "hold" ? 0 : Math.min(afterIncludedCents, topUpBalanceCents)
+  const invoiceCents =
+    summary.status === "hold"
+      ? 0
+      : Number(Math.max(0, afterIncludedCents - topUpAppliedCents).toFixed(2))
+  const quotaRemainingCents =
+    summary.status === "hold"
+      ? includedComputeCents
+      : Number(Math.max(0, includedComputeCents - includedUsageAppliedCents).toFixed(2))
+  const topUpRemainingCents =
+    summary.status === "hold"
+      ? topUpBalanceCents
+      : Number(Math.max(0, topUpBalanceCents - topUpAppliedCents).toFixed(2))
+
+  if (summary.status === "hold") {
+    return {
+      plan: accountControl.plan ?? "unknown",
+      paymentRail: accountControl.paymentRail ?? "unknown",
+      includedUsageAppliedCents,
+      topUpAppliedCents,
+      invoiceCents,
+      quotaRemainingCents,
+      topUpRemainingCents,
+      billingDecision: "hold_invoice",
+      financeAction:
+        "Do not release invoice-facing AI compute revenue until critical billing findings are resolved.",
+    }
+  }
+
+  return {
+    plan: accountControl.plan ?? "unknown",
+    paymentRail: accountControl.paymentRail ?? "unknown",
+    includedUsageAppliedCents: Number(includedUsageAppliedCents.toFixed(2)),
+    topUpAppliedCents: Number(topUpAppliedCents.toFixed(2)),
+    invoiceCents,
+    quotaRemainingCents,
+    topUpRemainingCents,
+    billingDecision:
+      invoiceCents > 0 ? "invoice_overage" : "covered_by_subscription_or_topup",
+    financeAction:
+      invoiceCents > 0
+        ? "Release the reconciled overage after raw-vs-attributed review."
+        : "Post usage against included quota or prepaid top-up without issuing a new overage invoice.",
+  }
+}
+
+export function evaluateComputeBilling(events, policy, accountControls = {}) {
   const groups = new Map()
   for (const event of events) {
     const key = buildIdempotencyKey(event)
@@ -165,7 +237,7 @@ export function evaluateComputeBilling(events, policy) {
 
   const reproducibilityFindings = evaluateReproducibilityRuns(events)
   const reproducibilityHoldEventIds = new Set(
-    reproducibilityFindings.map((finding) => finding.eventId),
+    reproducibilityFindings.flatMap((finding) => finding.eventIds),
   )
   const meterRows = []
   const groupFindings = []
@@ -228,7 +300,7 @@ export function evaluateComputeBilling(events, policy) {
         (finding) =>
           finding.accountId === accountId && finding.severity === "critical",
       )
-      return {
+      const summary = {
         accountId,
         status: criticalFindings.length > 0 ? "hold" : "ready",
         billableCents: Number(
@@ -242,8 +314,16 @@ export function evaluateComputeBilling(events, policy) {
         meterRows: rows.length,
         criticalFindings: criticalFindings.length,
       }
+      return {
+        ...summary,
+        ...allocateInvoiceDecision(summary, accountControls[accountId]),
+      }
     })
 
+  const invoiceCents = accountSummaries.reduce(
+    (sum, summary) => sum + summary.invoiceCents,
+    0,
+  )
   const report = {
     status: heldAccountIds.size > 0 ? "finance_review_required" : "invoice_ready",
     generatedAt: policy.generatedAt,
@@ -260,6 +340,10 @@ export function evaluateComputeBilling(events, policy) {
           .reduce((sum, row) => sum + row.avoidedOverbillCents, 0)
           .toFixed(2),
       ),
+      invoiceCents: Number(invoiceCents.toFixed(2)),
+      heldInvoiceAccounts: accountSummaries.filter(
+        (summary) => summary.billingDecision === "hold_invoice",
+      ).length,
     },
     accountSummaries,
     meterRows,

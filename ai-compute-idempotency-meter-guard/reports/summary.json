@@ -7,7 +7,9 @@
     "heldRows": 1,
     "collapsedRows": 2,
     "billableCents": 3.59,
-    "avoidedOverbillCents": 94.46
+    "avoidedOverbillCents": 94.46,
+    "invoiceCents": 0.44,
+    "heldInvoiceAccounts": 1
   },
   "accountSummaries": [
     {
@@ -16,7 +18,16 @@
       "billableCents": 1.44,
       "avoidedOverbillCents": 1,
       "meterRows": 1,
-      "criticalFindings": 0
+      "criticalFindings": 0,
+      "plan": "Institutional License",
+      "paymentRail": "institutional_invoice",
+      "includedUsageAppliedCents": 1,
+      "topUpAppliedCents": 0,
+      "invoiceCents": 0.44,
+      "quotaRemainingCents": 0,
+      "topUpRemainingCents": 0,
+      "billingDecision": "invoice_overage",
+      "financeAction": "Release the reconciled overage after raw-vs-attributed review."
     },
     {
       "accountId": "lab-northbridge",
@@ -24,7 +35,16 @@
       "billableCents": 2.15,
       "avoidedOverbillCents": 2.96,
       "meterRows": 1,
-      "criticalFindings": 0
+      "criticalFindings": 0,
+      "plan": "Lab Pro",
+      "paymentRail": "card_subscription",
+      "includedUsageAppliedCents": 2,
+      "topUpAppliedCents": 0.15,
+      "invoiceCents": 0,
+      "quotaRemainingCents": 0,
+      "topUpRemainingCents": 14.85,
+      "billingDecision": "covered_by_subscription_or_topup",
+      "financeAction": "Post usage against included quota or prepaid top-up without issuing a new overage invoice."
     },
     {
       "accountId": "lab-westlake",
@@ -32,7 +52,16 @@
       "billableCents": 0,
       "avoidedOverbillCents": 90.5,
       "meterRows": 1,
-      "criticalFindings": 3
+      "criticalFindings": 2,
+      "plan": "Reproducibility Pack",
+      "paymentRail": "institutional_invoice",
+      "includedUsageAppliedCents": 0,
+      "topUpAppliedCents": 0,
+      "invoiceCents": 0,
+      "quotaRemainingCents": 25,
+      "topUpRemainingCents": 100,
+      "billingDecision": "hold_invoice",
+      "financeAction": "Do not release invoice-facing AI compute revenue until critical billing findings are resolved."
     }
   ],
   "meterRows": [
@@ -130,16 +159,12 @@
       "accountId": "lab-westlake",
       "severity": "critical",
       "code": "rerun_scope_undefined",
-      "eventId": "evt-004",
-      "message": "Nondeterministic reproducibility rerun lacks a billing-scope policy. Hold charges until run-vs-verified-output responsibility is defined."
-    },
-    {
-      "accountId": "lab-westlake",
-      "severity": "critical",
-      "code": "rerun_scope_undefined",
-      "eventId": "evt-005",
-      "message": "Nondeterministic reproducibility rerun lacks a billing-scope policy. Hold charges until run-vs-verified-output responsibility is defined."
+      "eventIds": [
+        "evt-004",
+        "evt-005"
+      ],
+      "message": "Nondeterministic reproducibility reruns lack a billing-scope policy. Hold charges until run-vs-verified-output responsibility is defined."
     }
   ],
-  "auditDigest": "5204e71ba374a26a8124c985bc4c66669ef462ded0da97fed3d3a21ecd0cc5bf"
+  "auditDigest": "d99fba495e098133aee15d4f6192b93a85f85257ee5e0a78084c0ef45302b3c8"
 }
