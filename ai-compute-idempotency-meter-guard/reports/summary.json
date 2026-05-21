@@ -4,10 +4,10 @@
   "totals": {
     "rawEvents": 10,
     "idempotencyGroups": 3,
-    "heldRows": 0,
-    "collapsedRows": 3,
-    "billableCents": 49.13,
-    "avoidedOverbillCents": 48.92
+    "heldRows": 1,
+    "collapsedRows": 2,
+    "billableCents": 3.59,
+    "avoidedOverbillCents": 94.46
   },
   "accountSummaries": [
     {
@@ -29,10 +29,10 @@
     {
       "accountId": "lab-westlake",
       "status": "hold",
-      "billableCents": 45.54,
-      "avoidedOverbillCents": 44.96,
+      "billableCents": 0,
+      "avoidedOverbillCents": 90.5,
       "meterRows": 1,
-      "criticalFindings": 2
+      "criticalFindings": 3
     }
   ],
   "meterRows": [
@@ -60,12 +60,12 @@
         "evt-004",
         "evt-005"
       ],
-      "retainedEventId": "evt-004",
-      "action": "collapse",
-      "reason": "content_hash_retry_collapse",
+      "retainedEventId": null,
+      "action": "hold",
+      "reason": "rerun_scope_undefined",
       "rawCents": 90.5,
-      "billableCents": 45.54,
-      "avoidedOverbillCents": 44.96
+      "billableCents": 0,
+      "avoidedOverbillCents": 90.5
     },
     {
       "idempotencyKey": "b2a37a068d268a32963d17c546ca1fb7dccc7382f41e03eadcebef8d8066a78c",
@@ -96,10 +96,10 @@
     },
     {
       "accountId": "lab-westlake",
-      "severity": "info",
-      "code": "content_hash_retry_collapse",
+      "severity": "critical",
+      "code": "rerun_scope_undefined",
       "idempotencyKey": "bf191a425a484f58e991c7bdf508864f1843a19701e9e20aeaebab84e0e94228",
-      "message": "1 retry or duplicate rows collapsed behind one content-hash meter row."
+      "message": "Nondeterministic reproducibility events share an undefined billing scope. Hold the invoice row until finance defines run-vs-verified-output responsibility."
     },
     {
       "accountId": "institute-helix",
@@ -141,5 +141,5 @@
       "message": "Nondeterministic reproducibility rerun lacks a billing-scope policy. Hold charges until run-vs-verified-output responsibility is defined."
     }
   ],
-  "auditDigest": "ad26f7c740cbb04048d433ab53d4eadcc33a9920393ebcf22651f6bfa19b818d"
+  "auditDigest": "5204e71ba374a26a8124c985bc4c66669ef462ded0da97fed3d3a21ecd0cc5bf"
 }

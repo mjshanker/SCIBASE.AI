@@ -163,37 +163,56 @@ export function evaluateComputeBilling(events, policy) {
     groups.get(key).push({ ...event, idempotencyKey: key })
   }
 
+  const reproducibilityFindings = evaluateReproducibilityRuns(events)
+  const reproducibilityHoldEventIds = new Set(
+    reproducibilityFindings.map((finding) => finding.eventId),
+  )
   const meterRows = []
   const groupFindings = []
   for (const [idempotencyKey, groupedEvents] of groups.entries()) {
     const result = evaluateGroup(groupedEvents, policy)
+    const hasUndefinedReproducibilityScope = groupedEvents.some((event) =>
+      reproducibilityHoldEventIds.has(event.id),
+    )
+    const action = hasUndefinedReproducibilityScope ? "hold" : result.action
+    const reason = hasUndefinedReproducibilityScope
+      ? "rerun_scope_undefined"
+      : result.reason
+    const billableCents = hasUndefinedReproducibilityScope
+      ? 0
+      : result.billableCents
+    const retainedEventId = hasUndefinedReproducibilityScope
+      ? null
+      : result.retainedEventId
     meterRows.push({
       idempotencyKey,
       accountId: groupedEvents[0].accountId,
       operation: groupedEvents[0].operation,
       eventIds: groupedEvents.map((event) => event.id).sort(),
-      retainedEventId: result.retainedEventId,
-      action: result.action,
-      reason: result.reason,
+      retainedEventId,
+      action,
+      reason,
       rawCents: Number(result.rawCents.toFixed(2)),
-      billableCents: Number(result.billableCents.toFixed(2)),
+      billableCents: Number(billableCents.toFixed(2)),
       avoidedOverbillCents: Number(
-        Math.max(0, result.rawCents - result.billableCents).toFixed(2),
+        Math.max(0, result.rawCents - billableCents).toFixed(2),
       ),
     })
     groupFindings.push({
       accountId: groupedEvents[0].accountId,
-      severity: result.action === "hold" ? "critical" : "info",
-      code: result.reason,
+      severity: action === "hold" ? "critical" : "info",
+      code: reason,
       idempotencyKey,
-      message: result.finding,
+      message: hasUndefinedReproducibilityScope
+        ? "Nondeterministic reproducibility events share an undefined billing scope. Hold the invoice row until finance defines run-vs-verified-output responsibility."
+        : result.finding,
     })
   }
 
   const findings = [
     ...groupFindings,
     ...evaluateSourceInflation(events, policy),
-    ...evaluateReproducibilityRuns(events),
+    ...reproducibilityFindings,
   ]
   const heldAccountIds = new Set(
     findings

@@ -11,6 +11,7 @@ const report = evaluateComputeBilling(computeEvents, policy)
 assert.equal(report.status, "finance_review_required")
 assert.equal(report.totals.rawEvents, 10)
 assert.equal(report.totals.idempotencyGroups, 3)
+assert.equal(report.totals.heldRows, 1)
 
 const retryEvents = computeEvents.slice(0, 3)
 assert.equal(buildIdempotencyKey(retryEvents[0]), buildIdempotencyKey(retryEvents[1]))
@@ -45,6 +46,13 @@ const reproducibilityFinding = report.findings.find(
 assert.equal(reproducibilityFinding.severity, "critical")
 assert.equal(reproducibilityFinding.accountId, "lab-westlake")
 
+const reproducibilityRow = report.meterRows.find((row) =>
+  row.eventIds.includes("evt-004"),
+)
+assert.equal(reproducibilityRow.action, "hold")
+assert.equal(reproducibilityRow.reason, "rerun_scope_undefined")
+assert.equal(reproducibilityRow.billableCents, 0)
+
 const inflationFinding = report.findings.find(
   (finding) =>
     finding.code === "raw_count_inflation" &&
@@ -57,6 +65,7 @@ const westlake = report.accountSummaries.find(
   (summary) => summary.accountId === "lab-westlake",
 )
 assert.equal(westlake.status, "hold")
+assert.equal(westlake.billableCents, 0)
 
 const secondReport = evaluateComputeBilling(computeEvents, policy)
 assert.equal(report.auditDigest, secondReport.auditDigest)
