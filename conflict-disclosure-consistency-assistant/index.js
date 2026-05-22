@@ -47,7 +47,7 @@ const cents = (amount) => Math.round(Number(amount ?? 0) * 100)
 const digestFor = (value) =>
   createHash("sha256").update(JSON.stringify(value)).digest("hex")
 
-const dollarsFor = (valueInCents) =>
+export const dollarsFor = (valueInCents) =>
   (valueInCents / 100).toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,

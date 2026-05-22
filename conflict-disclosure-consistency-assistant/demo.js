@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url"
 import {
   buildMarkdownPacket,
   buildSvgSummary,
+  dollarsFor,
   evaluateDisclosureConsistency,
 } from "./index.js"
 import { projects } from "./sample-data.js"
@@ -22,7 +23,7 @@ console.log(`Projects reviewed: ${evaluation.summary.projectsReviewed}`)
 console.log(`Held projects: ${evaluation.summary.heldProjects}`)
 console.log(`Ready projects: ${evaluation.summary.readyProjects}`)
 console.log(`Affected authors: ${evaluation.summary.affectedAuthors}`)
-console.log(`Undisclosed funding: ${evaluation.summary.undisclosedFundingCents}`)
+console.log(`Undisclosed funding: $${dollarsFor(evaluation.summary.undisclosedFundingCents)}`)
 console.log(`Critical findings: ${evaluation.summary.criticalFindings}`)
 console.log(`Warning findings: ${evaluation.summary.warningFindings}`)
 console.log(`Audit digest: ${evaluation.auditDigest}`)
