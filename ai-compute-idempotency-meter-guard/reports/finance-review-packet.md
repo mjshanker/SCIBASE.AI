@@ -7,9 +7,9 @@ Status: finance_review_required
 - Idempotency groups: 3
 - Collapsed retry rows: 2
 - Held rows: 1
-- Billable cents: 3.59
-- Avoided overbill cents: 94.46
-- Invoice overage cents: 0.44
+- Billable usage: 3.59 cents
+- Avoided overbill: 94.46 cents
+- Invoice overage: 0.44 cents
 - Held invoice accounts: 1
 - Audit digest: d99fba495e098133aee15d4f6192b93a85f85257ee5e0a78084c0ef45302b3c8
 

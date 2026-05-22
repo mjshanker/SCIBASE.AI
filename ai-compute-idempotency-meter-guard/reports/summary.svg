@@ -8,8 +8,8 @@
     <text x="96" y="305">Idempotency groups: 3</text>
     <text x="96" y="350">Collapsed retry rows: 2</text>
     <text x="96" y="395">Held rows: 1</text>
-    <text x="96" y="440">Avoided overbill cents: 94.46</text>
-    <text x="96" y="485">Invoice overage cents: 0.44</text>
+    <text x="96" y="440">Avoided overbill: 94.46 cents</text>
+    <text x="96" y="485">Invoice overage: 0.44 cents</text>
   </g>
   <rect x="700" y="230" width="430" height="248" rx="14" fill="#e0f2fe" stroke="#0284c7" stroke-width="3"/>
   <text x="732" y="286" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#075985">Controls covered</text>

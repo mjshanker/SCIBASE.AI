@@ -16,9 +16,9 @@ Status: ${report.status}
 - Idempotency groups: ${report.totals.idempotencyGroups}
 - Collapsed retry rows: ${report.totals.collapsedRows}
 - Held rows: ${report.totals.heldRows}
-- Billable cents: ${report.totals.billableCents}
-- Avoided overbill cents: ${report.totals.avoidedOverbillCents}
-- Invoice overage cents: ${report.totals.invoiceCents}
+- Billable usage: ${report.totals.billableCents} cents
+- Avoided overbill: ${report.totals.avoidedOverbillCents} cents
+- Invoice overage: ${report.totals.invoiceCents} cents
 - Held invoice accounts: ${report.totals.heldInvoiceAccounts}
 - Audit digest: ${report.auditDigest}
 
@@ -47,8 +47,8 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" v
     <text x="96" y="305">Idempotency groups: ${report.totals.idempotencyGroups}</text>
     <text x="96" y="350">Collapsed retry rows: ${report.totals.collapsedRows}</text>
     <text x="96" y="395">Held rows: ${report.totals.heldRows}</text>
-    <text x="96" y="440">Avoided overbill cents: ${report.totals.avoidedOverbillCents}</text>
-    <text x="96" y="485">Invoice overage cents: ${report.totals.invoiceCents}</text>
+    <text x="96" y="440">Avoided overbill: ${report.totals.avoidedOverbillCents} cents</text>
+    <text x="96" y="485">Invoice overage: ${report.totals.invoiceCents} cents</text>
   </g>
   <rect x="700" y="230" width="430" height="248" rx="14" fill="#e0f2fe" stroke="#0284c7" stroke-width="3"/>
   <text x="732" y="286" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#075985">Controls covered</text>
@@ -68,7 +68,7 @@ console.log(`Raw events: ${report.totals.rawEvents}`)
 console.log(`Idempotency groups: ${report.totals.idempotencyGroups}`)
 console.log(`Collapsed retry rows: ${report.totals.collapsedRows}`)
 console.log(`Held rows: ${report.totals.heldRows}`)
-console.log(`Avoided overbill cents: ${report.totals.avoidedOverbillCents}`)
-console.log(`Invoice overage cents: ${report.totals.invoiceCents}`)
+console.log(`Avoided overbill: ${report.totals.avoidedOverbillCents} cents`)
+console.log(`Invoice overage: ${report.totals.invoiceCents} cents`)
 console.log(`Held invoice accounts: ${report.totals.heldInvoiceAccounts}`)
 console.log(`Audit digest: ${report.auditDigest}`)
